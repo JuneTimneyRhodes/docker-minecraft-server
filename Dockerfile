@@ -62,7 +62,15 @@ WORKDIR /data
 STOPSIGNAL SIGTERM
 
 # End user MUST set EULA and change RCON_PASSWORD
-ENV TYPE=VANILLA VERSION=LATEST EULA="" UID=1000 GID=1000 LC_ALL=en_US.UTF-8
+ENV TYPE=FORGE VERSION=1.12.2 EULA=true UID=1000 GID=1000 LC_ALL=en_US.UTF-8
+
+# Download Tekkit 2 server files
+RUN curl -fsSL -o /tmp/tekkit2.zip https://servers.technicpack.net/Technic/servers/tekkit-2/Tekkit-2_Server_v1.2.6.zip \
+  && unzip /tmp/tekkit2.zip -d /data \
+  && rm /tmp/tekkit2.zip
+
+# Ensure proper permissions for Tekkit 2 files
+RUN chown -R ${UID}:${GID} /data
 
 COPY --chmod=755 scripts/start* /
 COPY --chmod=755 files/shims/ /usr/local/bin/
